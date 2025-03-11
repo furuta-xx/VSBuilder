@@ -1,0 +1,51 @@
+﻿<Window x:Class="VSBuilder.SolutionSettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VSBuilder"
+        mc:Ignorable="d" Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+    <Window.DataContext>
+        <local:SolutionSettingWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./ResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="20">
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="ソリューション名" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding SolutionName}" Width="400" Height="25" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="ソリューションファイルパス" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding SolutionFilePath}" Width="400" Height="25" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <Button Command="{Binding CommandRefSolutionFile}">参照</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="ビルド構成" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding BuildConfig}" Width="400" Height="25" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="プラットフォーム" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding Platform}" Width="400" Height="25" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="モジュールパス" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding ModulePath}" Width="400" Height="25" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <Button Command="{Binding CommandRefModulePath}">参照</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+            <TextBlock Text="出力パス" Width="120" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <TextBox Text="{Binding OutputPath}" Width="400" Height="25" VerticalAlignment="Center" Margin="0 0 10 0" />
+            <Button Command="{Binding CommandRefOutputPath}">参照</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Command="{Binding CommandAddSolution}" Content="{Binding ExecButtonText}" Margin="0 0 10 0" />
+            <Button Command="{Binding CommandCancel}">キャンセル</Button>
+        </StackPanel>
+    </StackPanel>
+</Window>
