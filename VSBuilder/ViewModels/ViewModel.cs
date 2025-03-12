@@ -136,6 +136,8 @@ namespace VSBuilder
 
         protected void ExecuteDeleteSolution()
         {
+            SolutionSettings = new ObservableCollection<SolutionSetting>(SolutionSettings.Where(s => !s.IsOutput));
+            SaveSettings();
         }
 
         protected void ExecuteAddCopyFile()
@@ -162,12 +164,16 @@ namespace VSBuilder
 
         protected void ExecuteDeleteCopyFile()
         {
+            CopyFileSettings = new ObservableCollection<CopyFileSetting>(CopyFileSettings.Where(s => !s.IsOutput));
+            SaveSettings();
         }
 
         protected void ExecuteBulkBuild()
         {
-            int success = 0;
-            int failed = 0;
+            int buildSuccess = 0;
+            int buildFailed = 0;
+            int copySuccess = 0;
+            int copyFailed = 0;
             foreach (SolutionSetting setting in SolutionSettings)
             {
                 DispatcherFrame frame = new DispatcherFrame();
@@ -200,15 +206,42 @@ namespace VSBuilder
                                 }
                                 CopyAll(new DirectoryInfo(setting.ModulePath), new DirectoryInfo(setting.OutputPath));
                             }
-                            success += p?.ExitCode == 0 ? 1 : 0;
-                            failed += p?.ExitCode == 0 ? 0 : 1;
+                            buildSuccess += p?.ExitCode == 0 ? 1 : 0;
+                            buildFailed += p?.ExitCode == 0 ? 0 : 1;
                         }
                     }
                     frame.Continue = false;
                 });
                 Dispatcher.PushFrame(frame);
             }
-            MessageText = $"全てのビルドが完了しました。(成功: {success}、失敗: {failed})";
+            foreach (CopyFileSetting setting in CopyFileSettings)
+            {
+                DispatcherFrame frame = new DispatcherFrame();
+                Task.Run(() =>
+                {
+                    if (setting.IsOutput)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MessageText = $"{setting.Name} のコピー中です。";
+                        });
+                        try
+                        {
+                            CopyAll(new DirectoryInfo(setting.SourcePath), new DirectoryInfo(setting.DestinationPath));
+                            copySuccess++;
+                        }
+                        catch
+                        {
+                            copyFailed++;
+                        }
+                    }
+                    frame.Continue = false;
+                });
+                Dispatcher.PushFrame(frame);
+            }
+            MessageText = "全てのビルドが完了しました。" +
+                (SolutionSettings.Count > 0 ? $"  ビルド成功: {buildSuccess}、ビルド失敗: {buildFailed}" : string.Empty) +
+                (CopyFileSettings.Count > 0 ? $"  コピー成功: {copySuccess}、コピー失敗: {copyFailed}" : string.Empty);
         }
 
         public void AddSolution(SolutionSetting ss, bool isEdit = false)
