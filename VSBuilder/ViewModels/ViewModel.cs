@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using VSBuilder.Models;
+using VSBuilder.Helpers;
 
 namespace VSBuilder
 {
@@ -30,7 +32,7 @@ namespace VSBuilder
         /// <param name="propertyName">プロパティ名</param>
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -42,6 +44,8 @@ namespace VSBuilder
             public string MsBuildPath { get; set; } = string.Empty;
 
             public List<SolutionSetting>? SolutionSettings { get; set; } = null;
+
+            public List<CopyFileSetting>? CopyFileSettings { get; set; } = null;
         }
 
         #endregion
@@ -50,7 +54,7 @@ namespace VSBuilder
 
         protected ObservableCollection<SolutionSetting> __solutionSettings = new ObservableCollection<SolutionSetting>();
 
-        protected ObservableCollection<CopyFile> __copyFiles = new ObservableCollection<CopyFile>();
+        protected ObservableCollection<CopyFileSetting> __copyFileSettings = new ObservableCollection<CopyFileSetting>();
 
         protected string __messageText = string.Empty;
 
@@ -58,23 +62,21 @@ namespace VSBuilder
 
         #region Property
 
-        public static ViewModel? Current { get; set; } = null;
-
         public string MsBuildPath { get; set; } = string.Empty;
 
         public ObservableCollection<SolutionSetting> SolutionSettings { get => __solutionSettings; set { __solutionSettings = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(SolutionSettingsVisibility)); } }
 
-        public ObservableCollection<CopyFile> CopyFiles { get => __copyFiles; set { __copyFiles = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(CopyFilesVisibility)); } }
+        public ObservableCollection<CopyFileSetting> CopyFileSettings { get => __copyFileSettings; set { __copyFileSettings = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(CopyFileSettingsVisibility)); } }
 
         public string MessageText { get => __messageText; set { __messageText = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(MessageTextVisibility)); } }
 
         public Visibility SolutionSettingsVisibility { get => SolutionSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
-        public Visibility CopyFilesVisibility { get => CopyFiles.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
+        public Visibility CopyFileSettingsVisibility { get => CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
         public Visibility MessageTextVisibility { get => MessageText != string.Empty ? Visibility.Visible : Visibility.Collapsed; }
 
-        public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFiles.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
+        public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
         #endregion
 
@@ -98,8 +100,6 @@ namespace VSBuilder
 
         public ViewModel()
         {
-            Current = this;
-
             CommandAddSolution = new RelayCommand(ExecuteAddSolution);
             CommandEditSolution = new RelayCommand(ExecuteEditSolution);
             CommandDeleteSolution = new RelayCommand(ExecuteDeleteSolution);
@@ -126,7 +126,7 @@ namespace VSBuilder
             }
             else if (solutions.Count > 1)
             {
-                MessageBox.Show("ソリューションを１つだけ選択してください。");
+                MessageBox.Show("ソリューションを1つだけ選択してください。");
             }
             else
             {
@@ -140,10 +140,24 @@ namespace VSBuilder
 
         protected void ExecuteAddCopyFile()
         {
+            (App.Current as App)?.OpenCopyFileSettingWindow();
         }
 
         protected void ExecuteEditCopyFile()
         {
+            List<CopyFileSetting> copyFileSettings = CopyFileSettings.ToList().FindAll(s => s.IsOutput);
+            if (copyFileSettings.Count == 0)
+            {
+                MessageBox.Show("コピーファイル設定を1つ選択してください。");
+            }
+            else if (copyFileSettings.Count > 1)
+            {
+                MessageBox.Show("コピーファイル設定を1つだけ選択してください。");
+            }
+            else
+            {
+                (App.Current as App)?.OpenCopyFileSettingWindow(copyFileSettings.FirstOrDefault());
+            }
         }
 
         protected void ExecuteDeleteCopyFile()
@@ -205,7 +219,7 @@ namespace VSBuilder
                 {
                     if (s.IsOutput)
                     {
-                        SolutionSetting.Copy(s, ss);
+                        s.CopyFrom(ss);
                         s.IsOutput = true;
                     }
                 }
@@ -222,9 +236,34 @@ namespace VSBuilder
             NotifyPropertyChanged(nameof(OutputVisibility));
         }
 
+        public void AddCopyFile(CopyFileSetting cfs, bool isEdit = false)
+        {
+            if (isEdit)
+            {
+                foreach (CopyFileSetting s in CopyFileSettings)
+                {
+                    if (s.IsOutput)
+                    {
+                        s.CopyFrom(cfs);
+                        s.IsOutput = true;
+                    }
+                }
+            }
+            else
+            {
+                CopyFileSettings.Add(cfs);
+            }
+
+            SaveSettings();
+
+            NotifyPropertyChanged(nameof(CopyFileSettings));
+            NotifyPropertyChanged(nameof(CopyFileSettingsVisibility));
+            NotifyPropertyChanged(nameof(OutputVisibility));
+        }
+
         public void SaveSettings()
         {
-            SettingJson json = new SettingJson() { MsBuildPath = MsBuildPath, SolutionSettings = SolutionSettings.ToList() };
+            SettingJson json = new SettingJson() { MsBuildPath = MsBuildPath, SolutionSettings = SolutionSettings.ToList(), CopyFileSettings = CopyFileSettings.ToList() };
             using (StreamWriter sw = new StreamWriter($"{AppDomain.CurrentDomain.BaseDirectory}\\setting.json", false))
             {
                 sw.Write(JsonSerializer.Serialize(json));
@@ -247,6 +286,7 @@ namespace VSBuilder
             {
                 MsBuildPath = json.MsBuildPath;
                 json.SolutionSettings?.ForEach(s => SolutionSettings.Add(s));
+                json.CopyFileSettings?.ForEach(s => CopyFileSettings.Add(s));
             }
         }
 

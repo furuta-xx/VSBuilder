@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace VSBuilder
+namespace VSBuilder.Helpers
 {
     public class RelayCommand : ICommand
     {
@@ -31,7 +31,7 @@ namespace VSBuilder
         public void RaiseCanExecuteChanged()
         {
             var handler = CanExecuteChanged;
-            if ( (handler != null))
+            if (handler != null)
             {
                 handler(this, EventArgs.Empty);
             }

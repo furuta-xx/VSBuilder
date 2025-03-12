@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VSBuilder.Models;
+using VSBuilder.Helpers;
+using VSBuilder.Services;
 
 namespace VSBuilder
 {
@@ -25,12 +28,14 @@ namespace VSBuilder
         /// <param name="propertyName">プロパティ名</param>
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
 
         #region Member
+
+        protected IFileDialogService __fileDialogService = new FileDialogService();
 
         protected bool __isEditMode = false;
 
@@ -39,8 +44,6 @@ namespace VSBuilder
         #endregion
 
         #region Property
-
-        public static SolutionSettingWindowViewModel? Current { get; set; } = null;
 
         public bool IsEditMode { get => __isEditMode; set { __isEditMode = value; NotifyPropertyChanged(nameof(Title)); NotifyPropertyChanged(nameof(ExecButtonText)); } }
 
@@ -78,8 +81,6 @@ namespace VSBuilder
 
         public SolutionSettingWindowViewModel()
         {
-            Current = this;
-
             CommandAddSolution = new RelayCommand(ExecuteAddSolution);
             CommandCancel = new RelayCommand(ExecuteCancel);
             CommandRefSolutionFile = new RelayCommand(ExecuteRefSolutionFile);
@@ -100,7 +101,7 @@ namespace VSBuilder
 
         protected void ExecuteAddSolution()
         {
-            ViewModel.Current?.AddSolution(__solutionSetting, IsEditMode);
+            (App.Current as App)?.ViewModelLocator.VM.AddSolution(__solutionSetting, IsEditMode);
             (App.Current as App)?.CloseSolutionSettingWindow();
         }
 
@@ -111,53 +112,28 @@ namespace VSBuilder
 
         protected void ExecuteRefSolutionFile()
         {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.DefaultExt = ".sln";
-            if (SolutionFilePath != string.Empty) dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(SolutionFilePath);
-            if (__solutionSetting.SolutionFilePath != string.Empty)
-            {
-                dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(__solutionSetting.SolutionFilePath);
-            }
-            dialog.Filter = "Solution File (.sln)|*.sln";
-
-            if (dialog.ShowDialog() == true)
-            {
-                SolutionFilePath = dialog.FileName;
-            }
+            string title = "ソリューションファイルを選択してください。";
+            string? defaultExt = ".sln";
+            string? defaultDirectory = SolutionFilePath != string.Empty ? System.IO.Path.GetDirectoryName(SolutionFilePath) : string.Empty;
+            string filter = "Solution File (.sln)|*.sln";
+            string? path = __fileDialogService.OpenFileDialog(title, defaultExt, defaultDirectory, filter);
+            if (path != null) SolutionFilePath = path;
         }
 
         protected void ExecuteRefModulePath()
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.Title = "モジュールフォルダを選択してください。";
-            if (ModulePath != string.Empty) dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(ModulePath);
-            if (__solutionSetting.SolutionFilePath != string.Empty)
-            {
-                dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(ModulePath);
-            }
-            dialog.IsFolderPicker = true;
-
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                ModulePath = dialog.FileName;
-            }
+            string title = "モジュールフォルダを選択してください。";
+            string? defaultDirectory = ModulePath != string.Empty ? System.IO.Path.GetDirectoryName(ModulePath) : string.Empty;
+            string? path = __fileDialogService.OpenFolderDialog(title, defaultDirectory);
+            if (path != null) ModulePath = path;
         }
 
         protected void ExecuteRefOutputPath()
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.Title = "出力フォルダを選択してください。";
-            if (OutputPath != string.Empty) dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(OutputPath);
-            if (__solutionSetting.SolutionFilePath != string.Empty)
-            {
-                dialog.DefaultDirectory = System.IO.Path.GetDirectoryName(__solutionSetting.OutputPath);
-            }
-            dialog.IsFolderPicker = true;
-
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                OutputPath = dialog.FileName;
-            }
+            string title = "出力フォルダを選択してください。";
+            string? defaultDirectory = OutputPath != string.Empty ? System.IO.Path.GetDirectoryName(OutputPath) : string.Empty;
+            string? path = __fileDialogService.OpenFolderDialog(title, defaultDirectory);
+            if (path != null) OutputPath = path;
         }
     }
 }
