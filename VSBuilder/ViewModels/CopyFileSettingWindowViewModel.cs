@@ -79,12 +79,12 @@ namespace VSBuilder
             CommandRefDestinationPath = new RelayCommand(ExecuteRefDestinationPath);
         }
 
-        public void SetCopyFileData(CopyFileSetting setting)
+        public void SetCopyFileData(CopyFileSetting setting, bool isEditMode = false)
         {
             CopyFileName = setting.Name;
             SourcePath = setting.SourcePath;
             DestinationPath = setting.DestinationPath;
-            IsEditMode = true;
+            IsEditMode = isEditMode;
         }
 
         public void ExecuteAddCopyFile()

@@ -11,15 +11,26 @@ namespace VSBuilder.Models
     /// </summary>
     public class CopyFileSetting
     {
+        public int ID { get; set; } = -1;
         public string Name { get; set; } = string.Empty;
         public string SourcePath { get; set; } = string.Empty;
         public string DestinationPath { get; set; } = string.Empty;
         public bool IsOutput { get; set; } = false;
 
+        public CopyFileSetting()
+        {
+        }
+
+        public CopyFileSetting(CopyFileSetting other)
+        {
+            CopyFrom(other);
+        }
+
         public void CopyFrom(CopyFileSetting other)
         {
             if (other == null) throw new ArgumentNullException(nameof(other));
 
+            ID = other.ID;
             Name = other.Name;
             SourcePath = other.SourcePath;
             DestinationPath = other.DestinationPath;

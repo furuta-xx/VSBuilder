@@ -33,7 +33,11 @@ namespace VSBuilder
 
                 if (setting != null)
                 {
-                    ViewModelLocator.SolutionSettingVM.SetSolutionData(setting);
+                    ViewModelLocator.SolutionSettingVM.SetSolutionData(setting, true);
+                }
+                else
+                {
+                    ViewModelLocator.SolutionSettingVM.SetSolutionData(new SolutionSetting());
                 }
                 SolutionSettingWindow.ShowDialog();
             }
@@ -57,7 +61,11 @@ namespace VSBuilder
 
                 if (setting != null)
                 {
-                    ViewModelLocator.CopyFileSettingVM.SetCopyFileData(setting);
+                    ViewModelLocator.CopyFileSettingVM.SetCopyFileData(setting, true);
+                }
+                else
+                {
+                    ViewModelLocator.CopyFileSettingVM.SetCopyFileData(new CopyFileSetting());
                 }
                 CopyFileSettingWindow.ShowDialog();
             }

@@ -78,6 +78,10 @@ namespace VSBuilder
 
         public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
+        public int SolutionNextID { get; set; } = 0;
+
+        public int CopyFileNextID { get; set; } = 0;
+
         #endregion
 
         #region Command
@@ -250,7 +254,7 @@ namespace VSBuilder
             {
                 foreach (SolutionSetting s in SolutionSettings)
                 {
-                    if (s.IsOutput)
+                    if (s.ID == ss.ID)
                     {
                         s.CopyFrom(ss);
                         s.IsOutput = true;
@@ -259,7 +263,9 @@ namespace VSBuilder
             }
             else
             {
-                SolutionSettings.Add(ss);
+                ss.ID = SolutionNextID;
+                SolutionNextID++;
+                SolutionSettings.Add(new SolutionSetting(ss));
             }
 
             SaveSettings();
@@ -275,7 +281,7 @@ namespace VSBuilder
             {
                 foreach (CopyFileSetting s in CopyFileSettings)
                 {
-                    if (s.IsOutput)
+                    if (s.ID == cfs.ID)
                     {
                         s.CopyFrom(cfs);
                         s.IsOutput = true;
@@ -284,7 +290,9 @@ namespace VSBuilder
             }
             else
             {
-                CopyFileSettings.Add(cfs);
+                cfs.ID = CopyFileNextID;
+                CopyFileNextID++;
+                CopyFileSettings.Add(new CopyFileSetting(cfs));
             }
 
             SaveSettings();
@@ -320,6 +328,15 @@ namespace VSBuilder
                 MsBuildPath = json.MsBuildPath;
                 json.SolutionSettings?.ForEach(s => SolutionSettings.Add(s));
                 json.CopyFileSettings?.ForEach(s => CopyFileSettings.Add(s));
+            }
+
+            if (SolutionSettings.Count > 0)
+            {
+                SolutionNextID = SolutionSettings.ToList().ConvertAll(s => s.ID).Max() + 1;
+            }
+            if (CopyFileSettings.Count  > 0)
+            {
+                CopyFileNextID = CopyFileSettings.ToList().ConvertAll(s => s.ID).Max() + 1;
             }
         }
 

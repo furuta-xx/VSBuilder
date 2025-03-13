@@ -88,7 +88,7 @@ namespace VSBuilder
             CommandRefOutputPath = new RelayCommand(ExecuteRefOutputPath);
         }
 
-        public void SetSolutionData(SolutionSetting setting)
+        public void SetSolutionData(SolutionSetting setting, bool isEditMode = false)
         {
             SolutionName = setting.Name;
             SolutionFilePath = setting.SolutionFilePath;
@@ -96,7 +96,7 @@ namespace VSBuilder
             Platform = setting.Platform;
             ModulePath = setting.ModulePath;
             OutputPath = setting.OutputPath;
-            IsEditMode = true;
+            IsEditMode = isEditMode;
         }
 
         protected void ExecuteAddSolution()
