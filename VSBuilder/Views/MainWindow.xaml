@@ -12,73 +12,91 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel LastChildFill="True" Margin="20">
-        <!-- Setting -->
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <Button Command="{Binding CommandAddSolution}" Margin="0 0 10 0">ソリューションの追加</Button>
-            <Button Command="{Binding CommandEditSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの編集</Button>
-            <Button Command="{Binding CommandDeleteSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの削除</Button>
-            <Button Command="{Binding CommandAddCopyFile}" Margin="0 0 10 0">コピーファイルの追加</Button>
-            <Button Command="{Binding CommandEditCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}" Margin="0 0 10 0">選択コピーファイルの編集</Button>
-            <Button Command="{Binding CommandDeleteCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}">選択コピーファイルの削除</Button>
-        </StackPanel>
-        <!-- Output -->
-        <StackPanel Orientation="Horizontal" Visibility="{Binding OutputVisibility}" DockPanel.Dock="Bottom" Margin="0 10 0 0">
-            <Button Command="{Binding CommandBulkBuild}" Name="ButtonBulkBuild">一括ビルド</Button>
-        </StackPanel>
-        <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageText}" Visibility="{Binding MessageTextVisibility}" Margin="0 20 0 0" />
-        <!-- Solutions & CopyFiles -->
-        <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-            <!-- Solutions -->
-            <StackPanel Orientation="Vertical" Visibility="{Binding SolutionSettingsVisibility}">
-                <TextBlock FontWeight="Black" FontSize="20" Margin="0 0 0 10">Solutions</TextBlock>
-                <ItemsControl Name="ItemsSolutions" ItemsSource="{Binding SolutionSettings}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsOutput}" Margin="0 0 0 10">
-                                <StackPanel Orientation="Vertical" Margin="3 -3 0 0">
-                                    <TextBlock FontWeight="DemiBold" FontSize="16" Text="{Binding Name}" Margin="0 0 0 5" />
-                                    <TextBlock FontSize="8" Text="{Binding SolutionFilePath}" />
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock FontSize="8" Text="{Binding BuildConfig}" />
-                                        <TextBlock FontSize="8" Text="|" Margin="5 0 5 0" />
-                                        <TextBlock FontSize="8" Text="{Binding Platform}" />
+    <StackPanel Orientation="Vertical">
+        <Menu>
+            <MenuItem Header="ファイル(_F)">
+                <MenuItem Header="アプリケーション終了(_E)" />
+            </MenuItem>
+            <MenuItem Header="編集(_E)">
+                <MenuItem Header="ソリューションの追加" Command="{Binding CommandAddSolution}" />
+                <MenuItem Header="選択ソリューションの編集" Command="{Binding CommandEditSolution}" />
+                <MenuItem Header="選択ソリューションの削除" Command="{Binding CommandDeleteSolution}" />
+                <MenuItem Header="コピーファイルの追加" Command="{Binding CommandAddCopyFile}" />
+                <MenuItem Header="選択コピーファイルの編集" Command="{Binding CommandEditCopyFile}" />
+                <MenuItem Header="選択コピーファイルの削除" Command="{Binding CommandDeleteCopyFile}" />
+            </MenuItem>
+            <MenuItem Header="実行(_B)">
+                <MenuItem Header="一括ビルド(_B)" Command="{Binding CommandBulkBuild}" />
+            </MenuItem>
+        </Menu>
+        <DockPanel LastChildFill="True" Margin="20">
+            <!-- Setting -->
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <Button Command="{Binding CommandAddSolution}" Margin="0 0 10 0">ソリューションの追加</Button>
+                <Button Command="{Binding CommandEditSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの編集</Button>
+                <Button Command="{Binding CommandDeleteSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの削除</Button>
+                <Button Command="{Binding CommandAddCopyFile}" Margin="0 0 10 0">コピーファイルの追加</Button>
+                <Button Command="{Binding CommandEditCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}" Margin="0 0 10 0">選択コピーファイルの編集</Button>
+                <Button Command="{Binding CommandDeleteCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}">選択コピーファイルの削除</Button>
+            </StackPanel>
+            <!-- Output -->
+            <StackPanel Orientation="Horizontal" Visibility="{Binding OutputVisibility}" DockPanel.Dock="Bottom" Margin="0 10 0 0">
+                <Button Command="{Binding CommandBulkBuild}" Name="ButtonBulkBuild">一括ビルド</Button>
+            </StackPanel>
+            <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageText}" Visibility="{Binding MessageTextVisibility}" Margin="0 20 0 0" />
+            <!-- Solutions & CopyFiles -->
+            <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                <!-- Solutions -->
+                <StackPanel Orientation="Vertical" Visibility="{Binding SolutionSettingsVisibility}">
+                    <TextBlock FontWeight="Black" FontSize="20" Margin="0 0 0 10">Solutions</TextBlock>
+                    <ItemsControl Name="ItemsSolutions" ItemsSource="{Binding SolutionSettings}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsOutput}" Margin="0 0 0 10">
+                                    <StackPanel Orientation="Vertical" Margin="3 -3 0 0">
+                                        <TextBlock FontWeight="DemiBold" FontSize="16" Text="{Binding Name}" Margin="0 0 0 5" />
+                                        <TextBlock FontSize="8" Text="{Binding SolutionFilePath}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="8" Text="{Binding BuildConfig}" />
+                                            <TextBlock FontSize="8" Text="|" Margin="5 0 5 0" />
+                                            <TextBlock FontSize="8" Text="{Binding Platform}" />
+                                        </StackPanel>
+                                        <TextBlock FontSize="8" Text="{Binding ModulePath}" />
+                                        <TextBlock FontSize="8" Text="{Binding OutputPath}" />
                                     </StackPanel>
-                                    <TextBlock FontSize="8" Text="{Binding ModulePath}" />
-                                    <TextBlock FontSize="8" Text="{Binding OutputPath}" />
-                                </StackPanel>
-                            </CheckBox>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <!-- CopyFiles -->
+                <StackPanel Orientation="Vertical" Visibility="{Binding CopyFileSettingsVisibility}" Margin="40 0 0 0">
+                    <TextBlock FontWeight="Black" FontSize="20" Margin="0 0 0 10">Copy Files</TextBlock>
+                    <ItemsControl Name="ItemsCopyFiles" ItemsSource="{Binding CopyFileSettings}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsOutput}" Margin="0 0 0 10">
+                                    <StackPanel Orientation="Vertical" Margin="3 -3 0 0">
+                                        <TextBlock FontWeight="DemiBold" FontSize="16" Text="{Binding Name}" Margin="0 0 0 5" />
+                                        <TextBlock FontSize="8" Text="{Binding SourcePath}" />
+                                        <TextBlock FontSize="8" Text="{Binding DestinationPath}" />
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </StackPanel>
-            <!-- CopyFiles -->
-            <StackPanel Orientation="Vertical" Visibility="{Binding CopyFileSettingsVisibility}" Margin="40 0 0 0">
-                <TextBlock FontWeight="Black" FontSize="20" Margin="0 0 0 10">Copy Files</TextBlock>
-                <ItemsControl Name="ItemsCopyFiles" ItemsSource="{Binding CopyFileSettings}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsOutput}" Margin="0 0 0 10">
-                                <StackPanel Orientation="Vertical" Margin="3 -3 0 0">
-                                    <TextBlock FontWeight="DemiBold" FontSize="16" Text="{Binding Name}" Margin="0 0 0 5" />
-                                    <TextBlock FontSize="8" Text="{Binding SourcePath}" />
-                                    <TextBlock FontSize="8" Text="{Binding DestinationPath}" />
-                                </StackPanel>
-                            </CheckBox>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </StackPanel>
-    </DockPanel>
+        </DockPanel>
+    </StackPanel>
 </Window>

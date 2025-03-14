@@ -142,6 +142,9 @@ namespace VSBuilder
         {
             SolutionSettings = new ObservableCollection<SolutionSetting>(SolutionSettings.Where(s => !s.IsOutput));
             SaveSettings();
+
+            NotifyPropertyChanged(nameof(SolutionSettingsVisibility));
+            NotifyPropertyChanged(nameof(OutputVisibility));
         }
 
         protected void ExecuteAddCopyFile()
@@ -170,6 +173,9 @@ namespace VSBuilder
         {
             CopyFileSettings = new ObservableCollection<CopyFileSetting>(CopyFileSettings.Where(s => !s.IsOutput));
             SaveSettings();
+
+            NotifyPropertyChanged(nameof(CopyFileSettingsVisibility));
+            NotifyPropertyChanged(nameof(OutputVisibility));
         }
 
         protected void ExecuteBulkBuild()
