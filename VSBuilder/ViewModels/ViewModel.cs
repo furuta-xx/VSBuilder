@@ -64,9 +64,30 @@ namespace VSBuilder
 
         public string MsBuildPath { get; set; } = string.Empty;
 
-        public ObservableCollection<SolutionSetting> SolutionSettings { get => __solutionSettings; set { __solutionSettings = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(SolutionSettingsVisibility)); } }
+        public ObservableCollection<SolutionSetting> SolutionSettings
+        {
+            get => __solutionSettings;
+            set
+            {
+                __solutionSettings = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(SolutionSettingsVisibility));
+                NotifyPropertyChanged(nameof(OutputVisibility));
+                NotifyPropertyChanged(nameof(IsMenuEnabledSolution));
+            }
+        }
 
-        public ObservableCollection<CopyFileSetting> CopyFileSettings { get => __copyFileSettings; set { __copyFileSettings = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(CopyFileSettingsVisibility)); } }
+        public ObservableCollection<CopyFileSetting> CopyFileSettings
+        {
+            get => __copyFileSettings;
+            set
+            {
+                __copyFileSettings = value;
+                NotifyPropertyChanged(); NotifyPropertyChanged(nameof(CopyFileSettingsVisibility));
+                NotifyPropertyChanged(nameof(OutputVisibility));
+                NotifyPropertyChanged(nameof(IsMenuEnabledCopyFile));
+            }
+        }
 
         public string MessageText { get => __messageText; set { __messageText = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(MessageTextVisibility)); } }
 
@@ -77,6 +98,12 @@ namespace VSBuilder
         public Visibility MessageTextVisibility { get => MessageText != string.Empty ? Visibility.Visible : Visibility.Collapsed; }
 
         public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
+
+        public bool IsMenuEnabledSolution { get => SolutionSettings.Count > 0; }
+
+        public bool IsMenuEnabledCopyFile { get => CopyFileSettings.Count > 0; }
+
+        public bool IsMenuEnabledOutput { get => IsMenuEnabledSolution || IsMenuEnabledCopyFile; }
 
         public int SolutionNextID { get; set; } = 0;
 
@@ -100,6 +127,8 @@ namespace VSBuilder
 
         public ICommand CommandBulkBuild { get; set; }
 
+        public ICommand CommandExit { get; set; }
+
         #endregion
 
         public ViewModel()
@@ -111,6 +140,7 @@ namespace VSBuilder
             CommandEditCopyFile = new RelayCommand(ExecuteEditCopyFile);
             CommandDeleteCopyFile = new RelayCommand(ExecuteDeleteCopyFile);
             CommandBulkBuild = new RelayCommand(ExecuteBulkBuild);
+            CommandExit = new RelayCommand(ExecuteExit);
 
             LoadSettings();
             CheckAndSetMsBuildPath();
@@ -252,6 +282,12 @@ namespace VSBuilder
             MessageText = "全てのビルドが完了しました。" +
                 (SolutionSettings.Count > 0 ? $"  ビルド成功: {buildSuccess}、ビルド失敗: {buildFailed}" : string.Empty) +
                 (CopyFileSettings.Count > 0 ? $"  コピー成功: {copySuccess}、コピー失敗: {copyFailed}" : string.Empty);
+        }
+
+        public void ExecuteExit()
+        {
+            SaveSettings();
+            Environment.Exit(0);
         }
 
         public void AddSolution(SolutionSetting ss, bool isEdit = false)

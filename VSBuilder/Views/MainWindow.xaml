@@ -15,18 +15,18 @@
     <StackPanel Orientation="Vertical">
         <Menu>
             <MenuItem Header="ファイル(_F)">
-                <MenuItem Header="アプリケーション終了(_E)" />
+                <MenuItem Header="アプリケーション終了(_E)" Command="{Binding CommandExit}" />
             </MenuItem>
             <MenuItem Header="編集(_E)">
                 <MenuItem Header="ソリューションの追加" Command="{Binding CommandAddSolution}" />
-                <MenuItem Header="選択ソリューションの編集" Command="{Binding CommandEditSolution}" />
-                <MenuItem Header="選択ソリューションの削除" Command="{Binding CommandDeleteSolution}" />
+                <MenuItem Header="選択ソリューションの編集" Command="{Binding CommandEditSolution}" IsEnabled="{Binding IsMenuEnabledSolution}" />
+                <MenuItem Header="選択ソリューションの削除" Command="{Binding CommandDeleteSolution}" IsEnabled="{Binding IsMenuEnabledSolution}" />
                 <MenuItem Header="コピーファイルの追加" Command="{Binding CommandAddCopyFile}" />
-                <MenuItem Header="選択コピーファイルの編集" Command="{Binding CommandEditCopyFile}" />
-                <MenuItem Header="選択コピーファイルの削除" Command="{Binding CommandDeleteCopyFile}" />
+                <MenuItem Header="選択コピーファイルの編集" Command="{Binding CommandEditCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
+                <MenuItem Header="選択コピーファイルの削除" Command="{Binding CommandDeleteCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
             </MenuItem>
             <MenuItem Header="実行(_B)">
-                <MenuItem Header="一括ビルド(_B)" Command="{Binding CommandBulkBuild}" />
+                <MenuItem Header="一括ビルド(_B)" Command="{Binding CommandBulkBuild}" IsEnabled="{Binding IsMenuEnabledOutput}" />
             </MenuItem>
         </Menu>
         <DockPanel LastChildFill="True" Margin="20">
