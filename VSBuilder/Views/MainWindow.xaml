@@ -18,10 +18,10 @@
                 <MenuItem Header="アプリケーション終了(_E)" Command="{Binding CommandExit}" />
             </MenuItem>
             <MenuItem Header="編集(_E)">
-                <MenuItem Header="ソリューションの追加" Command="{Binding CommandAddSolution}" />
+                <MenuItem Header="ソリューションの追加" Command="{Binding CommandAddSolution}" IsEnabled="{Binding IsWaitBuilding}" />
                 <MenuItem Header="選択ソリューションの編集" Command="{Binding CommandEditSolution}" IsEnabled="{Binding IsMenuEnabledSolution}" />
                 <MenuItem Header="選択ソリューションの削除" Command="{Binding CommandDeleteSolution}" IsEnabled="{Binding IsMenuEnabledSolution}" />
-                <MenuItem Header="コピーファイルの追加" Command="{Binding CommandAddCopyFile}" />
+                <MenuItem Header="コピーファイルの追加" Command="{Binding CommandAddCopyFile}" IsEnabled="{Binding IsWaitBuilding}" />
                 <MenuItem Header="選択コピーファイルの編集" Command="{Binding CommandEditCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
                 <MenuItem Header="選択コピーファイルの削除" Command="{Binding CommandDeleteCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
             </MenuItem>
@@ -32,16 +32,16 @@
         <DockPanel LastChildFill="True" Margin="20">
             <!-- Setting -->
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <Button Command="{Binding CommandAddSolution}" Margin="0 0 10 0">ソリューションの追加</Button>
-                <Button Command="{Binding CommandEditSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの編集</Button>
-                <Button Command="{Binding CommandDeleteSolution}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの削除</Button>
-                <Button Command="{Binding CommandAddCopyFile}" Margin="0 0 10 0">コピーファイルの追加</Button>
-                <Button Command="{Binding CommandEditCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}" Margin="0 0 10 0">選択コピーファイルの編集</Button>
-                <Button Command="{Binding CommandDeleteCopyFile}" Visibility="{Binding CopyFileSettingsVisibility}">選択コピーファイルの削除</Button>
+                <Button Command="{Binding CommandAddSolution}" IsEnabled="{Binding IsWaitBuilding}" Margin="0 0 10 0">ソリューションの追加</Button>
+                <Button Command="{Binding CommandEditSolution}" IsEnabled="{Binding IsWaitBuilding}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの編集</Button>
+                <Button Command="{Binding CommandDeleteSolution}" IsEnabled="{Binding IsWaitBuilding}" Visibility="{Binding SolutionSettingsVisibility}" Margin="0 0 10 0">選択ソリューションの削除</Button>
+                <Button Command="{Binding CommandAddCopyFile}" IsEnabled="{Binding IsWaitBuilding}" Margin="0 0 10 0">コピーファイルの追加</Button>
+                <Button Command="{Binding CommandEditCopyFile}" IsEnabled="{Binding IsWaitBuilding}" Visibility="{Binding CopyFileSettingsVisibility}" Margin="0 0 10 0">選択コピーファイルの編集</Button>
+                <Button Command="{Binding CommandDeleteCopyFile}" IsEnabled="{Binding IsWaitBuilding}" Visibility="{Binding CopyFileSettingsVisibility}">選択コピーファイルの削除</Button>
             </StackPanel>
             <!-- Output -->
             <StackPanel Orientation="Horizontal" Visibility="{Binding OutputVisibility}" DockPanel.Dock="Bottom" Margin="0 10 0 0">
-                <Button Command="{Binding CommandBulkBuild}" Name="ButtonBulkBuild">一括ビルド</Button>
+                <Button Command="{Binding CommandBulkBuild}" Name="ButtonBulkBuild" IsEnabled="{Binding IsWaitBuilding}">一括ビルド</Button>
             </StackPanel>
             <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageText}" Visibility="{Binding MessageTextVisibility}" Margin="0 20 0 0" />
             <!-- Solutions & CopyFiles -->
@@ -49,7 +49,7 @@
                 <!-- Solutions -->
                 <StackPanel Orientation="Vertical" Visibility="{Binding SolutionSettingsVisibility}">
                     <TextBlock FontWeight="Black" FontSize="20" Margin="0 0 0 10">Solutions</TextBlock>
-                    <ItemsControl Name="ItemsSolutions" ItemsSource="{Binding SolutionSettings}">
+                    <ItemsControl Name="ItemsSolutions" ItemsSource="{Binding SolutionSettings}" IsEnabled="{Binding IsBuilding}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Vertical" />

@@ -58,6 +58,8 @@ namespace VSBuilder
 
         protected string __messageText = string.Empty;
 
+        protected bool __isWaitBuilding = true;
+
         #endregion
 
         #region Property
@@ -99,11 +101,13 @@ namespace VSBuilder
 
         public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
-        public bool IsMenuEnabledSolution { get => SolutionSettings.Count > 0; }
+        public bool IsWaitBuilding { get => __isWaitBuilding; set { __isWaitBuilding = value; NotifyPropertyChanged(); } }
 
-        public bool IsMenuEnabledCopyFile { get => CopyFileSettings.Count > 0; }
+        public bool IsMenuEnabledSolution { get => SolutionSettings.Count > 0 && IsWaitBuilding; }
 
-        public bool IsMenuEnabledOutput { get => IsMenuEnabledSolution || IsMenuEnabledCopyFile; }
+        public bool IsMenuEnabledCopyFile { get => CopyFileSettings.Count > 0 && IsWaitBuilding; }
+
+        public bool IsMenuEnabledOutput { get => (IsMenuEnabledSolution || IsMenuEnabledCopyFile) && IsWaitBuilding; }
 
         public int SolutionNextID { get; set; } = 0;
 
@@ -210,6 +214,7 @@ namespace VSBuilder
 
         protected void ExecuteBulkBuild()
         {
+            IsWaitBuilding = false;
             int buildSuccess = 0;
             int buildFailed = 0;
             int copySuccess = 0;
@@ -282,6 +287,7 @@ namespace VSBuilder
             MessageText = "全てのビルドが完了しました。" +
                 (SolutionSettings.Count > 0 ? $"  ビルド成功: {buildSuccess}、ビルド失敗: {buildFailed}" : string.Empty) +
                 (CopyFileSettings.Count > 0 ? $"  コピー成功: {copySuccess}、コピー失敗: {copyFailed}" : string.Empty);
+            IsWaitBuilding = true;
         }
 
         public void ExecuteExit()
