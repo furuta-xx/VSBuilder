@@ -16,6 +16,8 @@ namespace VSBuilder.ViewModels
 
         protected CopyFileSettingWindowViewModel __copyFileSettingVM = new CopyFileSettingWindowViewModel();
 
+        protected HistoryWindowViewModel __historyVM = new HistoryWindowViewModel();
+
         #endregion
 
         #region Property
@@ -25,6 +27,8 @@ namespace VSBuilder.ViewModels
         public SolutionSettingWindowViewModel SolutionSettingVM { get => __solutionSettingVM; }
 
         public CopyFileSettingWindowViewModel CopyFileSettingVM { get => __copyFileSettingVM; }
+
+        public HistoryWindowViewModel HistoryVM { get => __historyVM; }
 
         #endregion
     }

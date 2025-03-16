@@ -25,6 +25,9 @@
                 <MenuItem Header="選択コピーファイルの編集" Command="{Binding CommandEditCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
                 <MenuItem Header="選択コピーファイルの削除" Command="{Binding CommandDeleteCopyFile}" IsEnabled="{Binding IsMenuEnabledCopyFile}" />
             </MenuItem>
+            <MenuItem Header="表示(_V)">
+                <MenuItem Header="履歴の表示(_H)" Command="{Binding CommandShowHistory}" />
+            </MenuItem>
             <MenuItem Header="実行(_B)">
                 <MenuItem Header="一括ビルド(_B)" Command="{Binding CommandBulkBuild}" IsEnabled="{Binding IsMenuEnabledOutput}" />
             </MenuItem>

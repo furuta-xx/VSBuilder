@@ -15,18 +15,18 @@ using System.Windows.Shapes;
 namespace VSBuilder.Views
 {
     /// <summary>
-    /// コピーファイル設定追加画面クラス
+    /// 履歴画面クラス
     /// </summary>
-    public partial class CopyFileSettingWindow : Window
+    public partial class HistoryWindow : Window
     {
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public CopyFileSettingWindow()
+        public HistoryWindow()
         {
             InitializeComponent();
 
-            DataContext = (App.Current as App)?.ViewModelLocator.CopyFileSettingVM;
+            DataContext = (App.Current as App)?.ViewModelLocator.HistoryVM;
         }
     }
 }

@@ -56,6 +56,8 @@ namespace VSBuilder
 
         protected ObservableCollection<CopyFileSetting> __copyFileSettings = new ObservableCollection<CopyFileSetting>();
 
+        protected ObservableCollection<ExecuteHistory> __executeHistory = new ObservableCollection<ExecuteHistory>();
+
         protected string __messageText = string.Empty;
 
         protected bool __isWaitBuilding = true;
@@ -90,6 +92,8 @@ namespace VSBuilder
                 NotifyPropertyChanged(nameof(IsMenuEnabledCopyFile));
             }
         }
+
+        public ObservableCollection<ExecuteHistory> ExecuteHistory { get => __executeHistory; set { __executeHistory = value; NotifyPropertyChanged(); } }
 
         public string MessageText { get => __messageText; set { __messageText = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(MessageTextVisibility)); } }
 
@@ -131,6 +135,8 @@ namespace VSBuilder
 
         public ICommand CommandBulkBuild { get; set; }
 
+        public ICommand CommandShowHistory { get; set; }
+
         public ICommand CommandExit { get; set; }
 
         #endregion
@@ -144,6 +150,7 @@ namespace VSBuilder
             CommandEditCopyFile = new RelayCommand(ExecuteEditCopyFile);
             CommandDeleteCopyFile = new RelayCommand(ExecuteDeleteCopyFile);
             CommandBulkBuild = new RelayCommand(ExecuteBulkBuild);
+            CommandShowHistory = new RelayCommand(ExecuteShowHistory);
             CommandExit = new RelayCommand(ExecuteExit);
 
             LoadSettings();
@@ -253,6 +260,7 @@ namespace VSBuilder
                             }
                             buildSuccess += p?.ExitCode == 0 ? 1 : 0;
                             buildFailed += p?.ExitCode == 0 ? 0 : 1;
+                            AddHistory(Models.ExecuteHistory.ExecuteType.Build, setting.Name, p?.ExitCode == 0);
                         }
                     }
                     frame.Continue = false;
@@ -274,10 +282,12 @@ namespace VSBuilder
                         {
                             CopyAll(new DirectoryInfo(setting.SourcePath), new DirectoryInfo(setting.DestinationPath));
                             copySuccess++;
+                            AddHistory(Models.ExecuteHistory.ExecuteType.CopyFile, setting.Name, true);
                         }
                         catch
                         {
                             copyFailed++;
+                            AddHistory(Models.ExecuteHistory.ExecuteType.CopyFile, setting.Name, false);
                         }
                     }
                     frame.Continue = false;
@@ -288,6 +298,11 @@ namespace VSBuilder
                 (SolutionSettings.Count > 0 ? $"  ビルド成功: {buildSuccess}、ビルド失敗: {buildFailed}" : string.Empty) +
                 (CopyFileSettings.Count > 0 ? $"  コピー成功: {copySuccess}、コピー失敗: {copyFailed}" : string.Empty);
             IsWaitBuilding = true;
+        }
+
+        public void ExecuteShowHistory()
+        {
+            (App.Current as App)?.OpenHistoryWindow();
         }
 
         public void ExecuteExit()
@@ -407,6 +422,20 @@ namespace VSBuilder
             {
                 Environment.Exit(0);
             }
+        }
+
+        public void AddHistory(ExecuteHistory.ExecuteType type, string target, bool state)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ExecuteHistory history = new ExecuteHistory()
+                {
+                    Type = type,
+                    Target = target,
+                    State = state
+                };
+                ExecuteHistory.Insert(0, history);
+            });
         }
 
         public static void CopyAll(DirectoryInfo source, DirectoryInfo target)

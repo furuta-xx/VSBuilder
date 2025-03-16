@@ -16,6 +16,7 @@ namespace VSBuilder
 
         protected SolutionSettingWindow? SolutionSettingWindow = null;
         protected CopyFileSettingWindow? CopyFileSettingWindow = null;
+        protected HistoryWindow? HistoryWindow = null;
 
         protected override void OnExit(ExitEventArgs e)
         {
@@ -77,6 +78,26 @@ namespace VSBuilder
             {
                 CopyFileSettingWindow.Close();
                 CopyFileSettingWindow = null;
+            }
+        }
+
+        public void OpenHistoryWindow()
+        {
+            if (HistoryWindow == null)
+            {
+                HistoryWindow = new HistoryWindow();
+                HistoryWindow.Closed += (s, e) => HistoryWindow = null;
+
+                HistoryWindow.Show();
+            }
+        }
+
+        public void CloseHistoryWindow()
+        {
+            if (HistoryWindow != null)
+            {
+                HistoryWindow.Close();
+                HistoryWindow = null;
             }
         }
     }
