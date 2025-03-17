@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using System.Windows.Navigation;
 using VSBuilder.Models;
 using VSBuilder.ViewModels;
 using VSBuilder.Views;
