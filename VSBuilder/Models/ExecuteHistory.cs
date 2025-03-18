@@ -21,5 +21,7 @@ namespace VSBuilder.Models
         public string Target { get; set; } = string.Empty;
 
         public bool State { get; set; } = false;
+
+        public string StateText { get => State ? "成功" : "失敗"; }
     }
 }
