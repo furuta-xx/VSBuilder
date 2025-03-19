@@ -47,6 +47,8 @@ namespace VSBuilder
 
         public bool IsEditMode { get => __isEditMode; set { __isEditMode = value; NotifyPropertyChanged(nameof(Title)); NotifyPropertyChanged(nameof(ExecButtonText)); } }
 
+        public int ID { get => __copyFileSetting.ID; set { __copyFileSetting.ID = value; NotifyPropertyChanged(); } }
+
         public string Title { get => IsEditMode ? "コピーファイル設定の編集" : "コピーファイル設定の追加"; }
 
         public string CopyFileName { get => __copyFileSetting.Name; set { __copyFileSetting.Name = value; NotifyPropertyChanged(); } }
@@ -81,6 +83,7 @@ namespace VSBuilder
 
         public void SetCopyFileData(CopyFileSetting setting, bool isEditMode = false)
         {
+            ID = setting.ID;
             CopyFileName = setting.Name;
             SourcePath = setting.SourcePath;
             DestinationPath = setting.DestinationPath;

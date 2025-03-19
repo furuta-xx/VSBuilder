@@ -47,6 +47,8 @@ namespace VSBuilder
 
         public bool IsEditMode { get => __isEditMode; set { __isEditMode = value; NotifyPropertyChanged(nameof(Title)); NotifyPropertyChanged(nameof(ExecButtonText)); } }
 
+        public int ID { get => __solutionSetting.ID; set { __solutionSetting.ID = value; NotifyPropertyChanged(); } }
+
         public string Title { get => IsEditMode ? "ソリューションの編集" : "ソリューションの追加"; }
 
         public string SolutionName { get => __solutionSetting.Name; set { __solutionSetting.Name = value; NotifyPropertyChanged(); } }
@@ -90,6 +92,7 @@ namespace VSBuilder
 
         public void SetSolutionData(SolutionSetting setting, bool isEditMode = false)
         {
+            ID = setting.ID;
             SolutionName = setting.Name;
             SolutionFilePath = setting.SolutionFilePath;
             BuildConfig = setting.BuildConfig;
