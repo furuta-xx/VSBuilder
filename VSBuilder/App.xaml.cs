@@ -89,6 +89,8 @@ namespace VSBuilder
                 HistoryWindow = new HistoryWindow();
                 HistoryWindow.Closed += (s, e) => HistoryWindow = null;
 
+                HistoryWindow.Left = MainWindow.Left + MainWindow.Width;
+                HistoryWindow.Top = MainWindow.Top;
                 HistoryWindow.Show();
             }
         }
