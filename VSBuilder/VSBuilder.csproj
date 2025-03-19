@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\images\history.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Resources\images\VSBuilder.ico" />
   </ItemGroup>
 
@@ -21,6 +25,10 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\images\history.png" />
   </ItemGroup>
 
 </Project>

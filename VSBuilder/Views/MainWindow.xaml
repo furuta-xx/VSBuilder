@@ -46,7 +46,6 @@
             <StackPanel Orientation="Horizontal" Visibility="{Binding OutputVisibility}" DockPanel.Dock="Bottom" Margin="0 10 0 0">
                 <Button Command="{Binding CommandBulkBuild}" Name="ButtonBulkBuild" IsEnabled="{Binding IsWaitBuilding}">一括ビルド</Button>
             </StackPanel>
-            <TextBlock DockPanel.Dock="Bottom" Text="{Binding MessageText}" Visibility="{Binding MessageTextVisibility}" Margin="0 20 0 0" />
             <!-- Solutions & CopyFiles -->
             <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
                 <!-- Solutions -->
@@ -101,5 +100,33 @@
                 </StackPanel>
             </StackPanel>
         </DockPanel>
+        <StatusBar Padding="2">
+            <StatusBarItem HorizontalAlignment="Left">
+                <TextBlock Text="{Binding MessageText}" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Visibility="{Binding ResultVisibility}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="成功: " />
+                    <TextBlock Text="{Binding SuccessCount}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Visibility="{Binding ResultVisibility}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="失敗: " />
+                    <TextBlock Text="{Binding FailedCount}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <Button Command="{Binding CommandShowHistory}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                        </Style>
+                    </Button.Style>
+                    <Image Source="../Resources/images/history.png" Height="14" />
+                </Button>
+            </StatusBarItem>
+        </StatusBar>
     </StackPanel>
 </Window>

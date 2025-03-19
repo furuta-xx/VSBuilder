@@ -60,6 +60,10 @@ namespace VSBuilder
 
         protected string __messageText = string.Empty;
 
+        protected int __successCount = 0;
+
+        protected int __failedCount = 0;
+
         protected bool __isWaitBuilding = true;
 
         #endregion
@@ -95,15 +99,19 @@ namespace VSBuilder
 
         public ObservableCollection<ExecuteHistory> ExecuteHistory { get => __executeHistory; set { __executeHistory = value; NotifyPropertyChanged(); } }
 
-        public string MessageText { get => __messageText; set { __messageText = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(MessageTextVisibility)); } }
+        public string MessageText { get => __messageText; set { __messageText = value; NotifyPropertyChanged();} }
+
+        public int SuccessCount { get => __successCount; set { __successCount = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(ResultVisibility)); } }
+
+        public int FailedCount { get => __failedCount; set { __failedCount = value; NotifyPropertyChanged(); NotifyPropertyChanged(nameof(ResultVisibility)); } }
 
         public Visibility SolutionSettingsVisibility { get => SolutionSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
         public Visibility CopyFileSettingsVisibility { get => CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
 
-        public Visibility MessageTextVisibility { get => MessageText != string.Empty ? Visibility.Visible : Visibility.Collapsed; }
-
         public Visibility OutputVisibility { get => SolutionSettings.Count == 0 && CopyFileSettings.Count == 0 ? Visibility.Collapsed : Visibility.Visible; }
+
+        public Visibility ResultVisibility { get => SuccessCount + FailedCount > 0 ? Visibility.Visible : Visibility.Collapsed; }
 
         public bool IsWaitBuilding { get => __isWaitBuilding; set { __isWaitBuilding = value; NotifyPropertyChanged(); } }
 
@@ -222,6 +230,9 @@ namespace VSBuilder
         protected void ExecuteBulkBuild()
         {
             IsWaitBuilding = false;
+            MessageText = string.Empty;
+            SuccessCount = 0;
+            FailedCount = 0;
             int buildSuccess = 0;
             int buildFailed = 0;
             int copySuccess = 0;
@@ -258,6 +269,7 @@ namespace VSBuilder
                                 }
                                 CopyAll(new DirectoryInfo(setting.ModulePath), new DirectoryInfo(setting.OutputPath));
                             }
+                            setting.IsLastBuildState = p?.ExitCode == 0;
                             buildSuccess += p?.ExitCode == 0 ? 1 : 0;
                             buildFailed += p?.ExitCode == 0 ? 0 : 1;
                             AddHistory(Models.ExecuteHistory.ExecuteType.Build, setting.Name, p?.ExitCode == 0);
@@ -281,11 +293,13 @@ namespace VSBuilder
                         try
                         {
                             CopyAll(new DirectoryInfo(setting.SourcePath), new DirectoryInfo(setting.DestinationPath));
+                            setting.IsLastBuildState = true;
                             copySuccess++;
                             AddHistory(Models.ExecuteHistory.ExecuteType.CopyFile, setting.Name, true);
                         }
                         catch
                         {
+                            setting.IsLastBuildState = false;
                             copyFailed++;
                             AddHistory(Models.ExecuteHistory.ExecuteType.CopyFile, setting.Name, false);
                         }
@@ -294,9 +308,9 @@ namespace VSBuilder
                 });
                 Dispatcher.PushFrame(frame);
             }
-            MessageText = "全てのビルドが完了しました。" +
-                (SolutionSettings.Count > 0 ? $"  ビルド成功: {buildSuccess}、ビルド失敗: {buildFailed}" : string.Empty) +
-                (CopyFileSettings.Count > 0 ? $"  コピー成功: {copySuccess}、コピー失敗: {copyFailed}" : string.Empty);
+            MessageText = "全てのビルドが完了しました。";
+            SuccessCount = buildSuccess + copySuccess;
+            FailedCount = buildFailed + copyFailed;
             IsWaitBuilding = true;
         }
 

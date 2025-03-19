@@ -19,6 +19,7 @@ namespace VSBuilder.Models
         public string ModulePath { get; set; } = string.Empty;
         public string OutputPath { get; set; } = string.Empty;
         public bool IsOutput { get; set; } = false;
+        public bool IsLastBuildState { get; set; } = true;
 
         public SolutionSetting()
         {

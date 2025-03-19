@@ -16,6 +16,7 @@ namespace VSBuilder.Models
         public string SourcePath { get; set; } = string.Empty;
         public string DestinationPath { get; set; } = string.Empty;
         public bool IsOutput { get; set; } = false;
+        public bool IsLastBuildState { get; set; } = true;
 
         public CopyFileSetting()
         {
